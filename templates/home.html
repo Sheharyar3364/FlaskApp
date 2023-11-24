@@ -22,19 +22,26 @@
 
         })
 
+        // update text on popping state
+        window.onpopstate = e => {
+            const data = e.state;
+            document.title = data.title
+            document.querySelector('#body').innerHTML = data.text
+        }
         async function load_page(name) {
             try {
+                const response = await fetch(`/${name}`);
+                const data = await response.text();
 
-                const response = await fetch(`/${name}`)
-    
-                const data = await response.text()
-    
-                document.querySelector('#body').innerHTML = data            
-            } catch(error) {
-                console.error("Error:", error)
+                document.querySelector('#body').innerHTML = data;
+                document.title = name;
+
+                const state = {'title': name, 'text': data}; // Store only necessary information
+                history.pushState(state, name, name);
+
+            } catch (error) {
+                console.error("Error:", error);
             }
-
-
         }
 
     </script>
